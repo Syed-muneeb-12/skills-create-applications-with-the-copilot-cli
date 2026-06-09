@@ -48,8 +48,7 @@ function mul(arr) { return arr.reduce((a,b) => a * b, 1); }
 function div(arr) {
   return arr.slice(1).reduce((a,b) => {
     if (b === 0) {
-      console.error('Error: Division by zero');
-      process.exit(3);
+      throw new Error('Division by zero');
     }
     return a / b;
   }, arr[0]);
@@ -58,8 +57,7 @@ function div(arr) {
 function modulo(arr) {
   return arr.slice(1).reduce((a,b) => {
     if (b === 0) {
-      console.error('Error: Modulo by zero');
-      process.exit(3);
+      throw new Error('Modulo by zero');
     }
     return a % b;
   }, arr[0]);
@@ -74,57 +72,66 @@ function squareRoot(arr) {
   // Square root: expects one operand
   const n = arr[0];
   if (n < 0) {
-    console.error('Error: Square root of negative number');
-    process.exit(3);
+    throw new Error('Square root of negative number');
   }
   return Math.sqrt(n);
 }
 
 let result;
 const opLower = op.toLowerCase();
-switch(opLower) {
-  case 'add':
-  case '+':
-    if (nums.length < 2) { console.error('add requires at least two operands'); usage(); process.exit(2); }
-    result = add(nums);
-    break;
-  case 'sub':
-  case '-':
-    if (nums.length < 2) { console.error('sub requires at least two operands'); usage(); process.exit(2); }
-    result = sub(nums);
-    break;
-  case 'mul':
-  case '*':
-  case 'x':
-    if (nums.length < 2) { console.error('mul requires at least two operands'); usage(); process.exit(2); }
-    result = mul(nums);
-    break;
-  case 'div':
-  case '/':
-    if (nums.length < 2) { console.error('div requires at least two operands'); usage(); process.exit(2); }
-    result = div(nums);
-    break;
-  case 'mod':
-  case '%':
-  case 'modulo':
-    if (nums.length < 2) { console.error('modulo requires two operands'); usage(); process.exit(2); }
-    result = modulo(nums);
-    break;
-  case 'pow':
-  case '^':
-  case 'power':
-    if (nums.length < 2) { console.error('power requires two operands'); usage(); process.exit(2); }
-    result = power(nums);
-    break;
-  case 'sqrt':
-  case 'squareroot':
-    if (nums.length < 1) { console.error('sqrt requires one operand'); usage(); process.exit(2); }
-    result = squareRoot(nums);
-    break;
-  default:
-    console.error(`Unsupported operation: ${op}`);
-    usage();
-    process.exit(2);
+try {
+  switch(opLower) {
+    case 'add':
+    case '+':
+      if (nums.length < 2) { console.error('add requires at least two operands'); usage(); process.exit(2); }
+      result = add(nums);
+      break;
+    case 'sub':
+    case '-':
+      if (nums.length < 2) { console.error('sub requires at least two operands'); usage(); process.exit(2); }
+      result = sub(nums);
+      break;
+    case 'mul':
+    case '*':
+    case 'x':
+      if (nums.length < 2) { console.error('mul requires at least two operands'); usage(); process.exit(2); }
+      result = mul(nums);
+      break;
+    case 'div':
+    case '/':
+      if (nums.length < 2) { console.error('div requires at least two operands'); usage(); process.exit(2); }
+      result = div(nums);
+      break;
+    case 'mod':
+    case '%':
+    case 'modulo':
+      if (nums.length < 2) { console.error('modulo requires two operands'); usage(); process.exit(2); }
+      result = modulo(nums);
+      break;
+    case 'pow':
+    case '^':
+    case 'power':
+      if (nums.length < 2) { console.error('power requires two operands'); usage(); process.exit(2); }
+      result = power(nums);
+      break;
+    case 'sqrt':
+    case 'squareroot':
+      if (nums.length < 1) { console.error('sqrt requires one operand'); usage(); process.exit(2); }
+      result = squareRoot(nums);
+      break;
+    default:
+      console.error(`Unsupported operation: ${op}`);
+      usage();
+      process.exit(2);
+  }
+} catch (e) {
+  console.error('Error:', e.message);
+  process.exit(3);
+}
+
+// Export functions for testing when required as a module
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { add, sub, mul, div, modulo, power, squareRoot };
 }
 
 // Print result (no extra formatting) and exit
