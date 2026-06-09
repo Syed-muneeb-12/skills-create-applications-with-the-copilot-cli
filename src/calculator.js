@@ -24,6 +24,14 @@ function usage() {
   console.error('Operations: add (+), sub (-), mul (*, x), div (/), mod (%), pow (^), sqrt');
 }
 
+function add(arr) { return arr.reduce((a,b) => a + b, 0); }
+function sub(arr) { return arr.slice(1).reduce((a,b) => a - b, arr[0]); }
+function mul(arr) { return arr.reduce((a,b) => a * b, 1); }
+function div(arr) { return arr.slice(1).reduce((a,b) => { if (b === 0) { throw new Error('Division by zero'); } return a / b; }, arr[0]); }
+function modulo(arr) { return arr.slice(1).reduce((a,b) => { if (b === 0) { throw new Error('Modulo by zero'); } return a % b; }, arr[0]); }
+function power(arr) { return Math.pow(arr[0], arr[1]); }
+function squareRoot(arr) { const n = arr[0]; if (n < 0) { throw new Error('Square root of negative number'); } return Math.sqrt(n); }
+
 // CLI entrypoint: only run parsing/execution when invoked directly
 if (require.main === module) {
   const [op, ...operandStrs] = process.argv.slice(2);
