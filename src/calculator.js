@@ -21,12 +21,12 @@
 
 function usage() {
   console.error('Usage: node src/calculator.js <operation> <num1> <num2> [...numN]');
-  console.error('Operations: add (+), sub (-), mul (*, x), div (/)');
+  console.error('Operations: add (+), sub (-), mul (*, x), div (/), mod (%), pow (^), sqrt');
 }
 
 const [op, ...operandStrs] = process.argv.slice(2);
 
-if (!op || operandStrs.length < 2) {
+if (!op) {
   usage();
   process.exit(2);
 }
@@ -55,25 +55,71 @@ function div(arr) {
   }, arr[0]);
 }
 
+function modulo(arr) {
+  return arr.slice(1).reduce((a,b) => {
+    if (b === 0) {
+      console.error('Error: Modulo by zero');
+      process.exit(3);
+    }
+    return a % b;
+  }, arr[0]);
+}
+
+function power(arr) {
+  // Exponentiation: expects exactly two operands: base and exponent
+  return Math.pow(arr[0], arr[1]);
+}
+
+function squareRoot(arr) {
+  // Square root: expects one operand
+  const n = arr[0];
+  if (n < 0) {
+    console.error('Error: Square root of negative number');
+    process.exit(3);
+  }
+  return Math.sqrt(n);
+}
+
 let result;
 const opLower = op.toLowerCase();
 switch(opLower) {
   case 'add':
   case '+':
+    if (nums.length < 2) { console.error('add requires at least two operands'); usage(); process.exit(2); }
     result = add(nums);
     break;
   case 'sub':
   case '-':
+    if (nums.length < 2) { console.error('sub requires at least two operands'); usage(); process.exit(2); }
     result = sub(nums);
     break;
   case 'mul':
   case '*':
   case 'x':
+    if (nums.length < 2) { console.error('mul requires at least two operands'); usage(); process.exit(2); }
     result = mul(nums);
     break;
   case 'div':
   case '/':
+    if (nums.length < 2) { console.error('div requires at least two operands'); usage(); process.exit(2); }
     result = div(nums);
+    break;
+  case 'mod':
+  case '%':
+  case 'modulo':
+    if (nums.length < 2) { console.error('modulo requires two operands'); usage(); process.exit(2); }
+    result = modulo(nums);
+    break;
+  case 'pow':
+  case '^':
+  case 'power':
+    if (nums.length < 2) { console.error('power requires two operands'); usage(); process.exit(2); }
+    result = power(nums);
+    break;
+  case 'sqrt':
+  case 'squareroot':
+    if (nums.length < 1) { console.error('sqrt requires one operand'); usage(); process.exit(2); }
+    result = squareRoot(nums);
     break;
   default:
     console.error(`Unsupported operation: ${op}`);
